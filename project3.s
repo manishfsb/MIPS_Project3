@@ -17,5 +17,8 @@ main:	li $v0, 8
 	lb $a0, 0($sp)
 	addi $sp, $sp, 1
 	
+	li $v0, 11
+	syscall
+
 End:	li $v0, 10 
 	syscall	
