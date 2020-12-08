@@ -34,8 +34,66 @@ Call2:	add $t1, $ra, $zero
 	
 Sub2:
 	lb $a0, 0($fp)
-	add $t2, $ra, $zero
+	
+First:	blt $a1, $s4, Sub						#this branch checks if we're done removing leading spaces, then we check for just the four characters which might or might not be valid						
+	lb $a0, 0($a1)
+
+LoopA:
+	beq $a0, 32, After2 
+	beq $a0, 9, After2
+	beq $a0, 0, After2						#Checking for space, tab, null and enter as only leading and trailing white spaces
+	beq $a0, 10, After2
+	
+	beq $t2, 1, invalid
+	
+	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
+	la $t3, 0($a1)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
+	addi $a1, $a1, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
+	j First
+
+After2:	
+	addi $a1, $a1, -1
+	j First
+
+Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, instead of proceeding to calculation, we go to the invalid branch
+	
+	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
+	j Filter
+									
+After:	blt $t3, $s4, return						#checking if t3 is less than s4 which is the address of the first character, at which point we return out of the program 
+	addi $t3, $t3, -1						#decrementing by 1 as we are iterating from the back
+	j Sub
+
+Base:	mult $s6, $s5							#keep on multiplying s6 by our base to calculate the total value correctly, equivalent to t6 = t6 * t5 in high level languages
+	mflo $s6
+	j After								
+
+After1:	beq $t3, $s4, return						#if the white space characters are either the first or last character, we don't check further. If they're not, we check left and right to see if they're invalid
+	addi $t1, $t1, 1
+	beq $t1, 4, return						
+									
+	beq $t0, $zero, After
+	lb $a0, -1($t3)
+
+	beq $a0, 32, After 
+	beq $a0, 9, After
+	beq $a0, 0, After						#Checking for space, tab, null, enter and if they are in between valid characters, if not we just move to next character
+	beq $a0, 10, After
+	j invalid					
+	
+Filter:	
+	beq $a0, 32, After1 
+	beq $a0, 9, After1
+	beq $a0, 0, After1						#Checking for space, tab, null and enter
+	beq $a0, 10, After1						
+
+	
+	
+	add $t2, $ra, $zero						#t2 stores return address to go back to subprogram 1
 	jal Sub3
+	
+	
+	
 	
 Sub3:
 
