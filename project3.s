@@ -42,12 +42,16 @@ LoopA:
 	beq $a0, 0, After2						#Checking for space, tab, null and enter as only leading and trailing white spaces
 	beq $a0, 10, After2
 	
-	beq $t2, 1, invalid						#In case fifth valid character is found
+	beq $t2, 1, Dont						#In case fifth valid character is found
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
 	la $t3, 0($a0)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
 	addi $fp, $fp, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
+	
+
+Dont:	li $t6, -1
+	j return1
 
 After2:	
 	addi $fp, $fp, -1
@@ -88,6 +92,13 @@ Filter:
 	add $t2, $ra, $zero						#t2 stores return address to go back to subprogram 1
 	lb $a0, 0($t3)
 	jal Sub3
+	
+	add $t6, $t6, $v0						#Total value of valid characters
+	
+return1:	
+	add $ra, $t2, $zero
+	jr $ra
+
 	
 Sub3:
 	blt $a0, 48, invalid						
