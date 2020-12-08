@@ -18,10 +18,7 @@ Loop1:	lb $s2, 0($s1)
 	lb $a0, 0($sp)
 	addi $sp, $sp, 1
 	
-	li $v0, 11
-	syscall
-	
-Check:	beq $s3, 4, End
+Check:	beq $s3, 7, End
 	
 	addi $s3, $s3, 1
 	addi $s1, $s1, 1
