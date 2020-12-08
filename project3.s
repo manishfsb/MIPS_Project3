@@ -25,8 +25,14 @@ Call1:	jal Sub1
 
 Sub1:	
 Loop3:	lb $t0, 0($sp)
+	la $t1, $sp
 	addi $sp, $sp, 1
 	bne $t0, 44, Loop3
+	
+Call2:	
+	jal Sub2
+
+	
 	
 End:	li $v0, 10 
 	syscall	
