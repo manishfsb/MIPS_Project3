@@ -21,9 +21,9 @@ Check:	beq $s3, 10, Call1
 	addi $s1, $s1, 1
 	j Loop1
 	
-Call1:	jal Sub1
+Call1:	jal SubP1
 
-Sub1:	
+SubP1:	
 Loop3:	lb $t0, 0($sp)
 	addi $fp, $sp, -1
 	addi $sp, $sp, 1
@@ -33,11 +33,10 @@ Call2:	add $t1, $ra, $zero
 	jal Sub2
 	
 Sub2:
-	lb $a0, 0($fp)
 	
-First:	blt $a1, $s4, Sub						#this branch checks if we're done removing leading spaces, then we check for just the four characters which might or might not be valid						
-	lb $a0, 0($a1)
-
+First:	lb $a0, 0($fp)
+	blt $a1, $s4, Sub						#this branch checks if we're done removing leading spaces, then we check for just the four characters which might or might not be valid						
+	
 LoopA:
 	beq $a0, 32, After2 
 	beq $a0, 9, After2
@@ -48,11 +47,11 @@ LoopA:
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
 	la $t3, 0($a1)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
-	addi $a1, $a1, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
+	addi $fp, $fp, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
 
 After2:	
-	addi $a1, $a1, -1
+	addi $fp, $fp, 1
 	j First
 
 Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, instead of proceeding to calculation, we go to the invalid branch
