@@ -7,14 +7,15 @@ main:	li $v0, 8
 	la $a0, reply
 	li $a1, 11
 	syscall
+
+	la $s1, reply
 	
+	lb $s2, 0($s1)
 	addi $sp, $sp, -1
-	lb $sp, 0($a0)
+	sb $s2, 0($sp)
 
-	li $v0, 1
-	move $a0, 0($sp)
-	syscall
-
-
+	lb $a0, 0($sp)
+	addi $sp, $sp, 1
+	
 End:	li $v0, 10 
 	syscall	
