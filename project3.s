@@ -17,6 +17,11 @@ main:	li $v0, 8
 
 SubP1:	
 
+	add $t1, $ra, $zero
+	jal Sub2
+	
+Sub2:	
+
 Loop1:	lb $s2, 0($a1)
 	beq $a1, $s1, Not
 	beq $s2, 44, Comma
@@ -29,27 +34,8 @@ Not: 	add $a2, $s4, 0
 Comma:	addi $a2, $s4, 1
 	j Call1
 
-Loop3:	
-	lb $t0, 0($sp)
-	addi $s5, $s5, 1
-	beq $t0, 44, Comma
-	beq $s5, 10, Not
-	addi $sp, $sp, 1
-	j Loop3
-	
 
-Call2:	add $t1, $ra, $zero
-	jal Sub2
-	
-Sub2:	
-	
-	Loop1:	lb $s2, 0($s4)
-	beq $s1, $s4, Not
-	beq $s2, 44, Comma
-	addi $s4, $s4, -1				#To iterate through each character
-	j Loop1
-
-	
+Call1:	jal Sub3	
 First:	lb $a0, 0($fp)
 	
 LoopA:
