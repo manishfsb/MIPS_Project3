@@ -14,9 +14,10 @@ main:	li $v0, 8
 	
 Loop1:	lb $s2, 0($s4)
 	beq $s1, $s4, Call1
+	beq $s2, 44, Call1
 	addi $s4, $s4, -1				#To iterate through each character
 	j Loop1
-	
+
 Call1:	jal SubP1
 
 SubP1:	
@@ -28,10 +29,6 @@ Loop3:
 	addi $sp, $sp, 1
 	j Loop3
 	
-Comma:	addi $fp, $sp, -1
-	j Call2
-
-Not:	add $fp, $sp, $zero
 
 Call2:	add $t1, $ra, $zero
 	jal Sub2
