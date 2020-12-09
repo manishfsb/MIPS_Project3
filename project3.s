@@ -15,15 +15,20 @@ main:	li $v0, 8
 	
 	jal SubP1
 
-Not: 	add $a1, $s4, 0
+SubP1:	
+
+Loop1:	lb $s2, 0($a1)
+	beq $a1, $s1, Not
+	beq $s2, 44, Comma
+	addi $a1, $a1, -1				#To iterate through each character
+	j Loop1
+	
+Not: 	add $a2, $s4, 0
 	j Call1
 	
-Comma:	addi $a1, $s4, 1
+Comma:	addi $a2, $s4, 1
 	j Call1
 
-Call1:	jal SubP1
-
-SubP1:	
 Loop3:	
 	lb $t0, 0($sp)
 	addi $s5, $s5, 1
