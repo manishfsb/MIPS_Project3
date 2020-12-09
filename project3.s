@@ -16,12 +16,6 @@ main:	li $v0, 8
 	jal SubP1
 
 SubP1:	
-
-	add $t1, $ra, $zero
-	jal Sub2
-	
-Sub2:	
-
 Loop1:	lb $s2, 0($a1)
 	beq $a1, $s1, Not
 	beq $s2, 44, Comma
@@ -34,10 +28,15 @@ Not: 	add $a2, $s4, 0
 Comma:	addi $a2, $s4, 1
 	j Call1
 
-
-Call1:	jal Sub3	
-First:	lb $a0, 0($fp)
+Call1:	add $t1, $ra, $zero
+	jal Sub2
 	
+
+		
+First:	lb $a0, 0($fp)
+
+	
+Sub2:			
 LoopA:
 	beq $a0, 32, After2 
 	beq $a0, 9, After2
