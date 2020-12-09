@@ -11,12 +11,9 @@ main:	li $v0, 8
 	li $s5, 0
 	la $s1, reply
 	addi $s4, $s1, 10
+	move $a1, $s4
 	
-Loop1:	lb $s2, 0($s4)
-	beq $s1, $s4, Not
-	beq $s2, 44, Comma
-	addi $s4, $s4, -1				#To iterate through each character
-	j Loop1
+	jal SubP1
 
 Not: 	add $a1, $s4, 0
 	j Call1
@@ -39,7 +36,14 @@ Loop3:
 Call2:	add $t1, $ra, $zero
 	jal Sub2
 	
-Sub2:
+Sub2:	
+	
+	Loop1:	lb $s2, 0($s4)
+	beq $s1, $s4, Not
+	beq $s2, 44, Comma
+	addi $s4, $s4, -1				#To iterate through each character
+	j Loop1
+
 	
 First:	lb $a0, 0($fp)
 	
