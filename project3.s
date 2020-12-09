@@ -10,7 +10,7 @@ main:	li $v0, 8
 	
 	la $s1, reply
 	addi $s4, $s1, 10
-	move $a1, $s4
+	move $a1, $s1
 	
 	jal SubP1
 
@@ -18,16 +18,16 @@ SubP1:
 	li $t4, 0
 	
 Loop1:	lb $s2, 0($a1)
-	beq $a1, $s1, Not
+	beq $a1, $s4, Not
 	beq $s2, 44, Comma
 	addi $t4, $t4, 1
-	addi $a1, $a1, -1				#To iterate through each character
+	addi $a1, $a1, 1				#To iterate through each character
 	j Loop1
 	
 Not: 	add $a2, $a1, 0
 	j Call1
 	
-Comma:	addi $a2, $a1, 1
+Comma:	addi $a2, $a1, -1
 	j Call1
 
 Call1:	add $t1, $ra, $zero
@@ -35,8 +35,11 @@ Call1:	add $t1, $ra, $zero
 	
 	
 Sub2:	
-
-First:	lb $a0, 0($a2) 
+	la $t5, $a2
+	
+	
+First:	blt $a2, $t5, 
+	lb $a0, 0($a2) 
 	
 	beq $a0, 32, After2 
 	beq $a0, 9, After2
@@ -46,12 +49,11 @@ First:	lb $a0, 0($a2)
 	beq $t2, 1, Dont						#In case fifth valid character is found
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
-	la $t3, 0($a0)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
+	la $t3, 0($a2)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
 	addi $a2, $a2, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
 	
-
-Dont:	li $t6, -1
+Dont:	li $v1, -1
 	j return1
 
 After2:	
@@ -121,11 +123,11 @@ Upper:	li $s7, -55							# - 55 in s2 because A has value 10 in our base system
 			
 Common:	add $a0, $a0, $s7
 	move $v0, $a0
-	j return						#finding the value of the character
+	j return							#finding the value of the character
 
 invalid:li $v0, -1							#in case, any of the characters are invalid, we store -1 in v1 and later check if it is -1 in print label
 
-return:								#total value of the characters, if valid stored in s0, moved to v0 to return to our subprogram.
+return:									#total value of the characters, if valid stored in s0, moved to v0 to return to our subprogram.
 	jr $ra								#return to the next line after where we call our program
 
 End:	li $v0, 10 
