@@ -1,5 +1,5 @@
 .data
-invalid: .asciiz "NaN"
+invalid1: .asciiz "NaN"
 reply:	.space 10
 
 .text
@@ -16,18 +16,18 @@ Loop1:	lb $s2, 0($s1)
 	sb $s2, 0($sp)
 
 Check:	beq $s1, $s4, Call1
-	
-	addi $s3, $s3, 1
-	addi $s1, $s1, 1
+	addi $s1, $s1, 1				#To iterate through each character
 	j Loop1
 	
 Call1:	jal SubP1
 
 SubP1:	
-Loop3:	lb $t0, 0($sp)
+Loop3:	
+	lb $t0, 0($sp)
 	addi $fp, $sp, -1
 	addi $sp, $sp, 1
 	bne $t0, 44, Loop3
+	beq $t0, 0
 	
 Call2:	add $t1, $ra, $zero
 	jal Sub2
