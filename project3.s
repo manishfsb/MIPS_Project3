@@ -8,15 +8,13 @@ main:	li $v0, 8
 	li $a1, 11
 	syscall
 	
+	li $s5, 0
 	la $s1, reply
 	addi $s4, $s1, 10
 	
-Loop1:	lb $s2, 0($s1)
-	addi $sp, $sp, -1
-	sb $s2, 0($sp)
-
-Check:	beq $s1, $s4, Call1
-	addi $s1, $s1, 1				#To iterate through each character
+Loop1:	lb $s2, 0($s4)
+	beq $s1, $s4, Call1
+	addi $s4, $s4, -1				#To iterate through each character
 	j Loop1
 	
 Call1:	jal SubP1
@@ -24,11 +22,17 @@ Call1:	jal SubP1
 SubP1:	
 Loop3:	
 	lb $t0, 0($sp)
-	addi $fp, $sp, -1
+	addi $s5, $s5, 1
+	beq $t0, 44, Comma
+	beq $s5, 10, Not
 	addi $sp, $sp, 1
-	bne $t0, 44, Loop3
-	beq $t0, 0
+	j Loop3
 	
+Comma:	addi $fp, $sp, -1
+	j Call2
+
+Not:	add $fp, $sp, $zero
+
 Call2:	add $t1, $ra, $zero
 	jal Sub2
 	
