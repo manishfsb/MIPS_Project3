@@ -8,7 +8,6 @@ main:	li $v0, 8
 	li $a1, 11
 	syscall
 	
-	li $s5, 0
 	la $s1, reply
 	addi $s4, $s1, 10
 	move $a1, $s4
@@ -16,28 +15,29 @@ main:	li $v0, 8
 	jal SubP1
 
 SubP1:	
+	li $t4, 0
+	
 Loop1:	lb $s2, 0($a1)
 	beq $a1, $s1, Not
 	beq $s2, 44, Comma
+	addi $t4, $t4, 1
 	addi $a1, $a1, -1				#To iterate through each character
 	j Loop1
 	
-Not: 	add $a2, $s4, 0
+Not: 	add $a2, $a1, 0
 	j Call1
 	
-Comma:	addi $a2, $s4, 1
+Comma:	addi $a2, $a1, 1
 	j Call1
 
 Call1:	add $t1, $ra, $zero
 	jal Sub2
 	
-
-		
-First:	lb $a0, 0($fp)
-
 	
-Sub2:			
-LoopA:
+Sub2:	
+
+First:	lb $a0, 0($a2) 
+	
 	beq $a0, 32, After2 
 	beq $a0, 9, After2
 	beq $a0, 0, After2						#Checking for space, tab, null and enter as only leading and trailing white spaces
@@ -47,7 +47,7 @@ LoopA:
 	
 	li $t2, 1							#Changing the register to 1 to indicate we have reached our first valid character
 	la $t3, 0($a0)							#storing the address and moving address to t3 to later remember where we should start scanning 4 characters from
-	addi $fp, $fp, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
+	addi $a2, $a2, -4						#once we reach the first valid character, we only care about the leading white spaces, we skip the next four characters because they will be filtered in our subprogram
 	j First
 	
 
@@ -55,12 +55,12 @@ Dont:	li $t6, -1
 	j return1
 
 After2:	
-	addi $fp, $fp, -1
+	addi $a2, $a2, -1
 	j First
 
 Sub:	beq $t2, $zero, invalid						#if we haven't found a valid character while scanning through all leading and trailing white spaces, instead of proceeding to calculation, we go to the invalid branch
 	
-	lb $a0, 0($t3)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
+	lb $a0, 0($a2)							#Load the character to $a0 and go to filter to check if it's invalid or a lowercase, uppercase or a number
 	j Filter
 									
 After:	blt $t3, $s4, return						#checking if t3 is less than s4 which is the address of the first character, at which point we return out of the program 
