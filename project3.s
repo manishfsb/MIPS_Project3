@@ -3,8 +3,7 @@ invalid1: .asciiz "NaN"
 reply:	.space 10
 
 .text
-main:	addi $sp, $sp, -12
-	
+main:	
 	li $v0, 8
 	la $a0, reply
 	li $a1, 11						#Taking input from user
@@ -16,6 +15,21 @@ main:	addi $sp, $sp, -12
 	
 	jal SubP1
 	
+rStack:	lw $a0, ($sp)
+	beq $a0, -1, Nan1
+
+Total:	li $v0, 
+
+Comma:	li $v0, 11
+	li $a0, 44
+	syscall
+
+Nan1:	li $v0, 4
+	la $a0, invalid1
+	syscall
+	
+End:	li $v0, 10 
+	syscall
 	
 SubP1:	
 
@@ -30,8 +44,8 @@ Loop1:	lb $s2, 0($a1)						#loading first character of string later using to ite
 	add $t4, $ra, $zero					#t4 stores return address of the first subprogram
 	jal SubP2
 	
+	addi $sp, $sp, -4
 	sw $v0, ($sp)
-	addi $sp, $sp, 4
 	
 	jr $t4
 									
@@ -83,5 +97,4 @@ invalid:li $v0, -1							#in case, any of the characters are invalid, we store -
 return:									#total value of the characters, if valid stored in s0, moved to v0 to return to our subprogram.
 	jr $ra									#return to the next line after where we call our program
 
-End:	li $v0, 10 
-	syscall	
+	
