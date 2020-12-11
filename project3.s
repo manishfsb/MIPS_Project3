@@ -18,18 +18,15 @@ SubP1:
 	li $t4, 0
 	
 Loop1:	lb $s2, 0($a1)
-	beq $a1, $s4, Not
-	beq $s2, 44, Comma
-	addi $t4, $t4, 1
-	addi $a1, $a1, 1				#To iterate through each character
+	
+	beq $a0, 32, After2 
+	beq $a0, 9, After2
+	beq $a0, 0, After2						#Checking for space, tab, null and enter as only leading and trailing white spaces
+	beq $a0, 10, After2
+									#loading first character of string
+	addi $a1, $a1, 1						#To iterate through each character
 	j Loop1
 	
-Not: 	add $a2, $a1, 0
-	j Call1
-	
-Comma:	addi $a2, $a1, -1
-	j Call1
-
 Call1:	add $t1, $ra, $zero
 	jal Sub2
 	
