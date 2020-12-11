@@ -3,9 +3,11 @@ invalid1: .asciiz "NaN"
 reply:	.space 10
 
 .text
-main:	li $v0, 8
+main:	addi $sp, $sp, -12
+	
+	li $v0, 8
 	la $a0, reply
-	li $a1, 11
+	li $a1, 11						#Taking input from user
 	syscall
 	
 	la $s1, reply
@@ -13,7 +15,8 @@ main:	li $v0, 8
 	move $a1, $s1
 	
 	jal SubP1
-
+	
+	
 SubP1:	
 
 Loop1:	lb $s2, 0($a1)						#loading first character of string later using to iterate through
@@ -26,6 +29,11 @@ Loop1:	lb $s2, 0($a1)						#loading first character of string later using to ite
 	la $a2, $a1						#In case not a leading space, call SubP2 to look for the four characters
 	add $t4, $ra, $zero					#t4 stores return address of the first subprogram
 	jal SubP2
+	
+	sw $v0, ($sp)
+	addi $sp, $sp, 4
+	
+	jr $t4
 									
 Add:	addi $a1, $a1, 1					#To iterate through each character
 	j Loop1
@@ -44,7 +52,7 @@ SubP2:	move $a0, $a2
 NaN:	move $v1, $v0
 
 Return2:	
-	j $t6	
+	jr $t6	
 									
 First:	la $t5, ($a0)						#Loading the first valid character from the substring
 	
@@ -52,7 +60,7 @@ Sub3:
 	blt $t5, 48, invalid						
 	bgt $t5, 115, invalid 
 	
-	bge $t5, 97, Lower					#checking if characters are valid in our base system, if they are, they will go to the respective branches	
+	bge $t5, 97, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
 	bgt $t5, 83, invalid
 	bgt $t5, 64, Upper
 	bgt $t5, 57, invalid
