@@ -30,23 +30,20 @@ Loop1:	lb $s2, 0($a1)						#loading first character of string later using to ite
 Add:	addi $a1, $a1, 1					#To iterate through each character
 	j Loop1
 	
-Call1:	add $t1, $ra, $zero
-	jal Sub2
-	
 SubP2:	
-	la $t5, $a2
+	la $t5, ($a2)						#Loading the first valid character from the substring
 	
 First:	
 	
 Sub3:
-	blt $a0, 48, invalid						
-	bgt $a0, 115, invalid 
+	blt $t5, 48, invalid						
+	bgt $t5, 115, invalid 
 	
-	bge $a0, 97, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
-	bgt $a0, 83, invalid
-	bgt $a0, 64, Upper
-	bgt $a0, 57, invalid
-	bge $a0, 48, numeric
+	bge $t5, 97, Lower						#checking if characters are valid in our base system, if they are, they will go to the respective branches	
+	bgt $t5, 83, invalid
+	bgt $t5, 64, Upper
+	bgt $t5, 57, invalid
+	bge $t5, 48, numeric
 							
 numeric:li $s7, -48
 	j Common							# - 48 in s2 because 0 has value 0 in our base system
@@ -63,7 +60,7 @@ Common:	add $a0, $a0, $s7
 invalid:li $v0, -1							#in case, any of the characters are invalid, we store -1 in v1 and later check if it is -1 in print label
 
 return:									#total value of the characters, if valid stored in s0, moved to v0 to return to our subprogram.
-	jr $ra								#return to the next line after where we call our program
+	jr $ra									#return to the next line after where we call our program
 
 End:	li $v0, 10 
 	syscall	
