@@ -4,6 +4,8 @@ reply:	.space 10
 
 .text
 main:	
+	li $s6, 0						#To later use to count how many times we've made space for a word in the stack
+	
 	li $v0, 8
 	la $a0, reply
 	li $a1, 11						#Taking input from user
@@ -15,18 +17,24 @@ main:
 	
 	jal SubP1
 	
-rStack:	lw $a0, ($sp)
+rStack:	beq $s6, 0, End
+	lw $a0, ($sp)
 	beq $a0, -1, Nan1
+	addi $sp, $sp, 4
+	addi $s6, $s6, -1
 
-Total:	li $v0, 
+Total:	li $v0,1
+	syscall 
 
 Comma:	li $v0, 11
 	li $a0, 44
 	syscall
+	j rStack
 
 Nan1:	li $v0, 4
 	la $a0, invalid1
 	syscall
+	j Comma
 	
 End:	li $v0, 10 
 	syscall
@@ -40,11 +48,12 @@ Loop1:	lb $s2, 0($a1)						#loading first character of string later using to ite
 	beq $a0, 0, Add						#Checking for space, tab, null and enter as only leading white spaces
 	beq $a0, 10, Add
 	
-	la $a2, $a1						#In case not a leading space, call SubP2 to look for the four characters
+	add $a2, $a1, $zero						#In case not a leading space, call SubP2 to look for the four characters
 	add $t4, $ra, $zero					#t4 stores return address of the first subprogram
 	jal SubP2
 	
 	addi $sp, $sp, -4
+	addi $s6, $s6, 1
 	sw $v0, ($sp)
 	
 	jr $t4
@@ -56,14 +65,15 @@ SubP2:	move $a0, $a2
 	add $t6, $ra, $zero					#t6 to store ra of subP2 to later return to subP1
 	jal Sub3
 	
-	beq $v0, -1, NaN					#In case v0 contains -1, it indicates an invalid character was passed
-	addi $t7, $t7, v0					#Total of all the valid characters we passed
+	beq $v0, -1, invalid3					#In case v0 contains -1, it indicates an invalid character was passed
+	add $t7, $t7, $v0					#Total of all the valid characters we passed
 	
 	move $v1, $t7
 	j Return2
 	
 	
-NaN:	move $v1, $v0
+invalid3:	
+	move $v1, $v0
 
 Return2:	
 	jr $t6	
@@ -94,7 +104,7 @@ Common:	add $t5, $t5, $s7
 
 invalid:li $v0, -1							#in case, any of the characters are invalid, we store -1 in v1 and later check if it is -1 in print label
 
-return:									#total value of the characters, if valid stored in s0, moved to v0 to return to our subprogram.
-	jr $ra									#return to the next line after where we call our program
+return:									#decimal value of the character, if valid stored in s0, moved to v0 to return to our subprogram.
+	jr $ra								#return to the next line after where we call our third subprogram
 
 	
