@@ -33,7 +33,19 @@ Add:	addi $a1, $a1, 1					#To iterate through each character
 SubP2:	move $a0, $a2
 	add $t6, $ra, $zero					#t6 to store ra of subP2 to later return to subP1
 	jal Sub3
-								
+	
+	beq $v0, -1, NaN					#In case v0 contains -1, it indicates an invalid character was passed
+	addi $t7, $t7, v0					#Total of all the valid characters we passed
+	
+	move $v1, $t7
+	j Return2
+	
+	
+NaN:	move $v1, $v0
+
+Return2:	
+	j $t6	
+									
 First:	la $t5, ($a0)						#Loading the first valid character from the substring
 	
 Sub3:
