@@ -43,10 +43,10 @@ SubP1:
 
 Loop1:	lb $s2, 0($a1)						#loading first character of string later using to iterate through
 	
-	beq $a0, 32, Add 
-	beq $a0, 9, Add
-	beq $a0, 0, Add						#Checking for space, tab, null and enter as only leading white spaces
-	beq $a0, 10, Add
+	beq $s2, 32, Add 
+	beq $s2, 9, Add
+	beq $s2, 0, Add						#Checking for space, tab, null and enter as only leading white spaces
+	beq $s2, 10, Add
 	
 	add $a2, $a1, $zero						#In case not a leading space, call SubP2 to look for the four characters
 	add $t4, $ra, $zero					#t4 stores return address of the first subprogram
@@ -78,9 +78,11 @@ invalid3:
 Return2:	
 	jr $t6	
 									
-First:	la $t5, ($a0)						#Loading the first valid character from the substring
 	
 Sub3:
+
+First:	lb $t5, ($a0)						#Loading the first valid character from the substring
+
 	blt $t5, 48, invalid						
 	bgt $t5, 115, invalid 
 	
